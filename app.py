@@ -5,6 +5,8 @@ from datasets import load_dataset
 from sentence_transformers import SentenceTransformer
 from transformers import BlipForConditionalGeneration, BlipProcessor, GenerationConfig
 from PIL import Image
+import base64
+from io import BytesIO
 from sentence_transformers.util import semantic_search
 
 
@@ -33,14 +35,13 @@ def inference(model_inputs: dict) -> dict:
     global dataset_embeddings
 
     # Parse out your arguments
-    image = [model_inputs.get('image', None)]
+    image = model_inputs.get('image', None)
     if image is None:
         return {'message': "No image provided"}
-
-    raw_image = Image.open('guan.jpg')
-
-    # unconditional image captioning
-    inputs = processor(raw_image, return_tensors="pt")
+    image = image.encode('ascii')
+    image = base64.decodebytes(image)
+    image = Image.open(BytesIO(image))
+    inputs = processor(image, return_tensors="pt")
     out = model_image.generate(**inputs)
     image_text = processor.decode(out[0], skip_special_tokens=True)
     output = model_text.encode(image_text)
