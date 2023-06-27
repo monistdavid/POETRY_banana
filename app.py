@@ -38,9 +38,6 @@ def inference(model_inputs: dict) -> dict:
     image = model_inputs.get('image', None)
     if image is None:
         return {'message': "No image provided"}
-    image = image.encode('ascii')
-    image = base64.decodebytes(image)
-    image = Image.open(BytesIO(image))
     inputs = processor(image, return_tensors="pt")
     out = model_image.generate(**inputs)
     image_text = processor.decode(out[0], skip_special_tokens=True)
