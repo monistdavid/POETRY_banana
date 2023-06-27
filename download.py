@@ -16,8 +16,8 @@ def download_model():
     dataset_embeddings = torch.from_numpy(poetry_embeddings["train"].to_pandas().to_numpy()).to(torch.float)
 
     model_text = SentenceTransformer('sentence-transformers/distiluse-base-multilingual-cased-v1', device='cuda')
-    processor = BlipProcessor.from_pretrained("IDEA-CCNL/Taiyi-BLIP-750M-Chinese", device='cuda')
-    model_image = BlipForConditionalGeneration.from_pretrained("IDEA-CCNL/Taiyi-BLIP-750M-Chinese", device='cuda')
+    processor = BlipProcessor.from_pretrained("IDEA-CCNL/Taiyi-BLIP-750M-Chinese")
+    model_image = BlipForConditionalGeneration.from_pretrained("IDEA-CCNL/Taiyi-BLIP-750M-Chinese")
 
 
 if __name__ == "__main__":
