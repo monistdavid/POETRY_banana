@@ -1,14 +1,11 @@
-# In this file, we define download_model
-# It runs during container build time to get model weights built into the container
+# This file runs during container build time to get model weights built into the container
 
 # In this example: A Huggingface BERT model
-
 from transformers import pipeline
 import torch
 from datasets import load_dataset
 from sentence_transformers import SentenceTransformer
-from transformers import BlipForConditionalGeneration, BlipProcessor, GenerationConfig
-
+from transformers import BlipForConditionalGeneration, BlipProcessor
 
 def download_model():
     # do a dry run of loading the huggingface model, which will download weights

@@ -1,7 +1,7 @@
-sanic==22.6.2
+potassium
+torch
 transformers
-accelerate
-websockets==10.0
 sentence_transformers
 datasets
 Pillow
+accelerate
