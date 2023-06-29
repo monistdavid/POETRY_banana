@@ -6,6 +6,10 @@ from datasets import load_dataset
 from sentence_transformers import SentenceTransformer
 from transformers import BlipForConditionalGeneration, BlipProcessor
 from sentence_transformers.util import semantic_search
+import io
+from PIL import Image
+import base64
+from io import BytesIO
 
 app = Potassium("my_app")
 
@@ -34,6 +38,10 @@ def init():
 @app.handler()
 def handler(context: dict, request: Request) -> Response:
     image = request.json.get("image")
+    image = image.encode('ascii')
+    image = base64.decodebytes(image)
+    image = Image.open(BytesIO(image))
+
     dataset_embeddings = context.get("dataset_embeddings")
     model_text = context.get("model_text")
     processor = context.get("processor")
