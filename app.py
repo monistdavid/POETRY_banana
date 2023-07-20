@@ -10,6 +10,7 @@ import io
 from PIL import Image
 import base64
 from io import BytesIO
+import requests
 
 app = Potassium("my_app")
 
@@ -34,34 +35,9 @@ def init():
     return context
 
 
-#
-# # @app.handler runs for every call
-# @app.handler()
-# def handler(context: dict, request: Request) -> Response:
-#     image = request.json.get("image")
-#     image = image.encode('ascii')
-#     image = base64.decodebytes(image)
-#     image = Image.open(BytesIO(image))
-#
-#     dataset_embeddings = context.get("dataset_embeddings")
-#     model_text = context.get("model_text")
-#     processor = context.get("processor")
-#     model_image = context.get("model_image")
-#
-#     inputs = processor(image, return_tensors="pt")
-#     out = model_image.generate(**inputs)
-#     image_text = processor.decode(out[0], skip_special_tokens=True)
-#     output = model_text.encode(image_text)
-#     query_embeddings = torch.FloatTensor(output)
-#     hits = semantic_search(query_embeddings, dataset_embeddings, top_k=1)
-#
-#     return Response(
-#         json={"outputs": hits},
-#         status=200
-#     )
 
-
-@app.background("/background")
+# @app.handler runs for every call
+@app.handler()
 def handler(context: dict, request: Request) -> Response:
     image = request.json.get("image")
     image = image.encode('ascii')
@@ -79,9 +55,35 @@ def handler(context: dict, request: Request) -> Response:
     output = model_text.encode(image_text)
     query_embeddings = torch.FloatTensor(output)
     hits = semantic_search(query_embeddings, dataset_embeddings, top_k=1)
-    send_webhook(url="http://localhost:8001", json={"outputs": hits})
 
-    return
+    return Response(
+        json={"outputs": hits},
+        status=200
+    )
+
+
+# @app.background("/background")
+# def handler(context: dict, request: Request) -> Response:
+#     image = request.json.get("image")
+#     image = image.encode('ascii')
+#     image = base64.decodebytes(image)
+#     image = Image.open(BytesIO(image))
+#
+#     dataset_embeddings = context.get("dataset_embeddings")
+#     model_text = context.get("model_text")
+#     processor = context.get("processor")
+#     model_image = context.get("model_image")
+#
+#     inputs = processor(image, return_tensors="pt")
+#     out = model_image.generate(**inputs)
+#     image_text = processor.decode(out[0], skip_special_tokens=True)
+#     output = model_text.encode(image_text)
+#     query_embeddings = torch.FloatTensor(output)
+#     hits = semantic_search(query_embeddings, dataset_embeddings, top_k=1)
+#     # send_webhook(url="http://localhost:8001", json={"outputs": hits})
+#     res = requests.post(url="http://localhost:8001", json={"outputs": hits})
+#
+#     return
 
 
 if __name__ == "__main__":
